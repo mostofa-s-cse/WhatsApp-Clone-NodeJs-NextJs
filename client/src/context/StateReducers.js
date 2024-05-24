@@ -6,24 +6,24 @@ export const initialState = {
     newUser:false,
   };
   
-  // Reducer function
-  const reducer = (state, action) => {
-    switch (action.type) {
-      case reducerCases.SET_USER_INFO:
-        console.log("ssSetUserInfo",{userInfo: action.userInfo})
-      return{
+// Reducer function
+const reducer = (state, action) => {
+  switch (action.type) {
+    case reducerCases.SET_USER_INFO:
+      // Log action type and updated userInfo
+      return {
         ...state,
         userInfo: action.userInfo,
-      }
-      case reducerCases.SET_NEW_USER:
-        console.log("ssNewUserInfo",{userInfo: action.userInfo})
-        return{
-            ...state,
-            newUser:action.newUser,
-        }
-      default:
-        return state;
-    }
-  };
-  
-  export default reducer;
+      };
+    case reducerCases.SET_NEW_USER:
+      // Log action type and updated newUser
+      return {
+        ...state,
+        newUser: action.newUser,
+      };
+    default:
+      return state;
+  }
+};
+
+export default reducer;
