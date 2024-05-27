@@ -20,7 +20,9 @@ function Onboarding() {
           width={300}
           className="w-32 h-32 md:w-60 md:h-60"
         />
-        <span className="text-3xl md:text-6xl xs:mt-4 sm:mt-5 md:mt-0 lg:mt-0">WhatsApp</span>
+        <span className="text-3xl md:text-6xl xs:mt-4 sm:mt-5 md:mt-0 lg:mt-0">
+          WhatsApp
+        </span>
       </div>
       <div className="text-xl md:text-2xl mt-4">Create your profile</div>
       <div className="flex flex-col md:flex-row gap-6 mt-6 items-center">
