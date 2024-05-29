@@ -3,16 +3,21 @@ import React, { useEffect, useRef } from "react";
 import { IoClose } from "react-icons/io5";
 
 function CapturePhoto({ setImage, hideCapturePhoto }) {
+  // Reference to the video element
   const videoRef = useRef(null);
 
   useEffect(() => {
     let stream;
+    
+    // Function to start the camera and get the video stream
     const startCamera = async () => {
       try {
+        // Request access to the user's camera
         stream = await navigator.mediaDevices.getUserMedia({
           video: true,
           audio: false,
         });
+        // If the video element is mounted, set the video source to the stream
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
         }
@@ -23,6 +28,7 @@ function CapturePhoto({ setImage, hideCapturePhoto }) {
 
     startCamera();
 
+    // Cleanup function to stop the camera stream when the component unmounts
     return () => {
       if (stream) {
         stream.getTracks().forEach((track) => track.stop());
@@ -30,12 +36,17 @@ function CapturePhoto({ setImage, hideCapturePhoto }) {
     };
   }, []);
 
+  // Function to capture the photo from the video stream
   const capturePhoto = () => {
     const canvas = document.createElement("canvas");
+    // Set the canvas dimensions to match the video dimensions
     canvas.width = videoRef.current.videoWidth;
     canvas.height = videoRef.current.videoHeight;
+    // Draw the current video frame onto the canvas
     canvas.getContext("2d").drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+    // Convert the canvas content to a data URL (base64-encoded image)
     setImage(canvas.toDataURL("image/jpeg"));
+    // Hide the capture photo component
     hideCapturePhoto(false);
   };
 

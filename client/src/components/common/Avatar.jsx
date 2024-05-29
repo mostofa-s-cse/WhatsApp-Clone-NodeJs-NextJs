@@ -7,22 +7,22 @@ import PhotoLibrary from "./PhotoLibrary";
 import CapturePhoto from "./CapturePhoto";
 
 function Avatar({ type, image, setImage }) {
+  // State hooks for various functionalities
   const [hover, setHover] = useState(false);
   const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
-  const [contextMenuCordinates, setcontextMenuCordinates] = useState({
-    x: 0,
-    y: 0,
-  });
+  const [contextMenuCordinates, setcontextMenuCordinates] = useState({ x: 0, y: 0 });
   const [grabPhoto, setGrabPhoto] = useState(false);
   const [showPhotoLibrary, setShowPhotoLibrary] = useState(false);
   const [showCapturePhoto, setShowCapturePhoto] = useState(false);
-  
+
+  // Function to show context menu
   const showContextMenu = (e) => {
     e.preventDefault();
-    setcontextMenuCordinates({ x: e.pageX, Y: e.pageY });
+    setcontextMenuCordinates({ x: e.pageX, y: e.pageY });
     setIsContextMenuVisible(true);
   };
 
+  // Effect to handle file input click
   useEffect(() => {
     if (grabPhoto) {
       const data = document.getElementById("photo-picker");
@@ -35,10 +35,14 @@ function Avatar({ type, image, setImage }) {
     }
   }, [grabPhoto]);
 
+  // Context menu options
   const contextMenuOptions = [
-    { name: "Take Photo", callback: () => {
-      setShowCapturePhoto(true);
-    } },
+    {
+      name: "Take Photo",
+      callback: () => {
+        setShowCapturePhoto(true);
+      },
+    },
     {
       name: "Choose From Library",
       callback: () => {
@@ -58,7 +62,8 @@ function Avatar({ type, image, setImage }) {
       },
     },
   ];
-  
+
+  // Function to handle photo picker change
   const photoPickerChange = async (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
@@ -76,6 +81,7 @@ function Avatar({ type, image, setImage }) {
   return (
     <>
       <div className="flex items-center justify-center">
+        {/* Render avatar based on size type */}
         {type === "sm" && (
           <div className="relative h-10 w-10">
             <Image
@@ -104,6 +110,7 @@ function Avatar({ type, image, setImage }) {
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
           >
+            {/* Overlay for changing profile photo */}
             <div
               className={`z-10 bg-photopicker-overlay-background h-60 w-60 absolute top-0 left-0 flex items-center rounded-full justify-center flex-col text-center gap-2
             ${hover ? "visible" : "hidden"}
@@ -131,6 +138,7 @@ function Avatar({ type, image, setImage }) {
             </div>
           </div>
         )}
+        {/* Render context menu if visible */}
         {isContextMenuVisible && (
           <ContextMenu
             options={contextMenuOptions}
@@ -139,18 +147,21 @@ function Avatar({ type, image, setImage }) {
             setContextMenu={setIsContextMenuVisible}
           />
         )}
+        {/* Render capture photo component if visible */}
         {showCapturePhoto && (
           <CapturePhoto
             setImage={setImage}
             hideCapturePhoto={setShowCapturePhoto}  // Fixed typo here
           />
         )}
+        {/* Render photo library if visible */}
         {showPhotoLibrary && (
           <PhotoLibrary
             setImage={setImage}
             hidePhotoLibrary={setShowPhotoLibrary}  // Fixed typo here
           />
         )}
+        {/* Render photo picker if grabPhoto is true */}
         {grabPhoto && <PhotoPicker onChange={photoPickerChange} />}
       </div>
     </>
