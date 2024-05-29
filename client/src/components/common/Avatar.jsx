@@ -14,6 +14,7 @@ function Avatar({ type, image, setImage }) {
   });
   const [grabPhoto, setGrabPhoto] = useState(false);
   const [showPhotoLibrary, setShowPhotoLibrary] = useState(false);
+  
   const showContextMenu = (e) => {
     e.preventDefault();
     setcontextMenuCordinates({ x: e.pageX, Y: e.pageY });
@@ -53,11 +54,10 @@ function Avatar({ type, image, setImage }) {
       },
     },
   ];
+  
   const photoPickerChange = async (e) => {
-    // console.log('img',e);
     const file = e.target.files[0];
     const reader = new FileReader();
-    // console.log("file",{file});
     const data = document.createElement("img");
     reader.onload = function (event) {
       data.src = event.target.result;
@@ -68,9 +68,7 @@ function Avatar({ type, image, setImage }) {
       setImage(data.src);
     }, 100);
   };
-  const hidePhotoLibrary = (value) => {
-    setShowPhotoLibrary(value);
-  };
+
   return (
     <>
       <div className="flex items-center justify-center">
@@ -140,7 +138,7 @@ function Avatar({ type, image, setImage }) {
         {showPhotoLibrary && (
           <PhotoLibrary
             setImage={setImage}
-            hidePhotoLibrary={setShowPhotoLibrary}
+            hidePhotoLibrary={setShowPhotoLibrary}  // Fixed typo here
           />
         )}
         {grabPhoto && <PhotoPicker onChange={photoPickerChange} />}

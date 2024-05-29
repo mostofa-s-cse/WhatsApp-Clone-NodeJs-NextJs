@@ -2,7 +2,7 @@ import Image from "next/image";
 import React from "react";
 import { IoClose } from "react-icons/io5";
 
-function PhotoLibrary({ setImage, hidePhotoLibaary }) {
+function PhotoLibrary({ setImage, hidePhotoLibrary }) {  // Fixed typo here
   const images = [
     "/avatars/1.png",
     "/avatars/2.png",
@@ -19,7 +19,7 @@ function PhotoLibrary({ setImage, hidePhotoLibaary }) {
       <div className="h-max w-max bg-gray-900 gap-6 rounded-lg p-4">
         <div
           className="pt-2 pe-2 cursor-pointer flex items-end justify-end "
-          onClick={() => hidePhotoLibaary(false)}
+          onClick={() => hidePhotoLibrary(false)}  // Fixed typo here
         >
           <IoClose className="h-8 w-8 cursor-pointer" />
         </div>
@@ -28,11 +28,11 @@ function PhotoLibrary({ setImage, hidePhotoLibaary }) {
             <div
               onClick={() => {
                 setImage(images[index]);
-                hidePhotoLibaary(false);
+                hidePhotoLibrary(false);  // Fixed typo here
               }}
             >
               <div className="h-24 w-24 cursor-pointer relative">
-                  <Image src={image} alt="avater"  fill/>
+                <Image src={image} alt="avatar" fill />
               </div>
             </div>
           ))}
