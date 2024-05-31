@@ -1,24 +1,75 @@
 import Avatar from "@/components/common/Avatar";
 import Input from "@/components/common/Input";
 import { useStateProvider } from "@/context/StateContext";
+import { reducerCases } from "@/context/constants";
+import { ONBOARD_USER_ROUTE } from "@/utils/ApiRoutes";
+import axios from "axios";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
 function Onboarding() {
-  const [{ userInfo }] = useStateProvider(); // Get userInfo from state context
+  const router = useRouter(); // Initialize useRouter hook
+  const [{ userInfo, newUser }, dispatch] = useStateProvider(); // Get userInfo and newUser from state context
 
+  // Initialize state variables for name, about, and image
+  const [name, setName] = useState(userInfo?.name || ""); 
+  const [about, setAbout] = useState(""); 
+  const [image, setImage] = useState(userInfo?.profilePicture || "/default_avatar.png"); 
+
+  // Redirect logic based on newUser and userInfo
   useEffect(() => {
-    console.log("userinfo",userInfo);
-  }, [userInfo]);
+    if (!newUser &&  !userInfo?.email) router.push("/login");
+     else if (!newUser && userInfo?.email) router.push("/");
+  },[newUser, userInfo, router]);
 
-  const [name, setName] = useState(userInfo?.name || ""); // Initialize name state with userInfo.name or empty string
-  const [about, setAbout] = useState(""); // Initialize about state with an empty string
-  const [image, setImage] = useState(userInfo?.profileImage || "/default_avatar.png"); // Initialize image state with userInfo.photoUrl or default avatar
+  // Handler to onboard the user
+  const onboardUserHandler = async () => {
+    if (validateDetails()) {
+      const email = userInfo.email;
+      try {
+        const { data } = await axios.post(ONBOARD_USER_ROUTE, {
+          email,
+          name,
+          about,
+          image
+        });
+        if (data.status) {
+          // Dispatch action to update newUser state
+          dispatch({
+            type: reducerCases.SET_NEW_USER,
+            newUser: false,
+          });
 
-  // Log image to check its value
-  useEffect(() => {
-    console.log("image",image);
-  }, [image]);
+          // Dispatch action to update userInfo state
+          dispatch({
+            type: reducerCases.SET_USER_INFO,
+            userInfo: {
+              id:data.id,
+              name,
+              email,
+              profilePicture: image,
+              status: about,
+            },
+          });
+
+          // Redirect to the main page
+          router.push("/");
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
+
+  // Validate user details
+  const validateDetails = () => {
+    if (name.length < 3) {
+      return false;
+    }
+    return true;
+  };
+
 
   return (
     <div className="bg-panel-header-background h-screen w-screen text-white flex flex-col items-center justify-center">
@@ -43,6 +94,14 @@ function Onboarding() {
         <div>
           <Avatar type="xl" image={image} setImage={setImage} /> {/* Avatar component with image and setImage props */}
         </div>
+      </div>
+      <div className="flex items-center justify-center">
+        <button
+          className="flex items-center justify-center gap-7 bg-search-input-container-background p-5 rounded"
+          onClick={onboardUserHandler}
+        >
+          Create Profile
+        </button>
       </div>
     </div>
   );

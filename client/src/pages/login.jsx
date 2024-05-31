@@ -13,35 +13,54 @@ function Login() {
   const router = useRouter(); // Initialize useRouter hook
   const [{}, dispatch] = useStateProvider(); // Use useStateProvider hook to access state and dispatch
 
-  const handleLogin = async () => { // Define handleLogin function for handling login
+  const handleLogin = async () => {
+    // Define handleLogin function for handling login
     const provider = new GoogleAuthProvider(); // Initialize GoogleAuthProvider
     try {
       const { user } = await signInWithPopup(firebaseAuth, provider); // Sign in with Google popup and get user info
-      const { displayName: name, email, photoURL: profileImage } = user; // Extract user info
-      console.log("User",{user});
+      const { displayName: name, email, photoURL: profilePicture } = user; // Extract user info
+      console.log("User", { user });
       if (email) {
         const { data } = await axios.post(CHECK_USER_ROUTE, { email }); // Check if user exists in the database
 
-        if (!data.status) { // If user does not exist
-          dispatch({ // Dispatch action to set new user flag
+        if (!data.status) {
+          // If user does not exist
+          dispatch({
+            // Dispatch action to set new user flag
             type: reducerCases.SET_NEW_USER,
             newUser: true,
           });
 
-          dispatch({ // Dispatch action to set user info
+          dispatch({
+            // Dispatch action to set user info
             type: reducerCases.SET_USER_INFO,
             userInfo: {
               name,
               email,
-              profileImage,
+              profilePicture,
               status: "",
             },
           });
 
           router.push("/onboarding"); // Redirect to onboarding page
+        } else {
+          const { id, name, email, profilePicture, status } = data;
+          dispatch({
+            // Dispatch action to set user info
+            type: reducerCases.SET_USER_INFO,
+            userInfo: {
+              id,
+              name,
+              email,
+              profilePicture,
+              status,
+            },
+          });
+          router.push("/");
         }
       }
-    } catch (err) { // Handle errors
+    } catch (err) {
+      // Handle errors
       console.error("Login error: ", err);
     }
   };
@@ -49,15 +68,18 @@ function Login() {
   return (
     <div className="flex justify-center items-center bg-panel-header-background h-screen w-screen flex-col gap-6">
       <div className="flex items-center justify-center gap-2 text-white">
-        <Image src="/whatsapp.gif" alt="WhatsApp" height={300} width={300} /> {/* Display WhatsApp logo */}
-        <span className="text-6xl">WhatsApp</span> {/* Display WhatsApp title */}
+        <Image src="/whatsapp.gif" alt="WhatsApp" height={300} width={300} />{" "}
+        {/* Display WhatsApp logo */}
+        <span className="text-6xl">WhatsApp</span>{" "}
+        {/* Display WhatsApp title */}
       </div>
       <button
         className="flex items-center justify-center gap-7 bg-search-input-container-background p-5 rounded"
         onClick={handleLogin} // Call handleLogin function on button click
       >
         <FcGoogle className="text-4xl" /> {/* Display Google icon */}
-        <span className="text-white text-2xl">Login with Google</span> {/* Display login text */}
+        <span className="text-white text-2xl">Login with Google</span>{" "}
+        {/* Display login text */}
       </button>
     </div>
   );
