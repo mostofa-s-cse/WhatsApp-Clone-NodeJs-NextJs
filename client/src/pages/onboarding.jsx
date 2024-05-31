@@ -2,13 +2,23 @@ import Avatar from "@/components/common/Avatar";
 import Input from "@/components/common/Input";
 import { useStateProvider } from "@/context/StateContext";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 function Onboarding() {
-  const [{ userInfo }] = useStateProvider();
-  const [name, setName] = useState(userInfo?.name || "");
-  const [about, setAbout] = useState("");
-  const [image, setImage] = useState("/default_avatar.png");
+  const [{ userInfo }] = useStateProvider(); // Get userInfo from state context
+
+  useEffect(() => {
+    console.log("userinfo",userInfo);
+  }, [userInfo]);
+
+  const [name, setName] = useState(userInfo?.name || ""); // Initialize name state with userInfo.name or empty string
+  const [about, setAbout] = useState(""); // Initialize about state with an empty string
+  const [image, setImage] = useState(userInfo?.profileImage || "/default_avatar.png"); // Initialize image state with userInfo.photoUrl or default avatar
+
+  // Log image to check its value
+  useEffect(() => {
+    console.log("image",image);
+  }, [image]);
 
   return (
     <div className="bg-panel-header-background h-screen w-screen text-white flex flex-col items-center justify-center">
@@ -27,11 +37,11 @@ function Onboarding() {
       <div className="text-xl md:text-2xl mt-4">Create your profile</div>
       <div className="flex flex-col md:flex-row gap-6 mt-6 items-center">
         <div className="flex flex-col items-center justify-center mt-5 gap-6">
-          <Input name="Display Name" state={name} setState={setName} label />
-          <Input name="About" state={about} setState={setAbout} label />
+          <Input name="Display Name" state={name} setState={setName} label /> {/* Input component for name */}
+          <Input name="About" state={about} setState={setAbout} label /> {/* Input component for about */}
         </div>
         <div>
-          <Avatar type="xl" image={image} setImage={setImage} />
+          <Avatar type="xl" image={image} setImage={setImage} /> {/* Avatar component with image and setImage props */}
         </div>
       </div>
     </div>
